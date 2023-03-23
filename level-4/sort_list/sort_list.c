@@ -3,10 +3,8 @@
 t_list *sort_list(t_list *lst, int (*cmp)(int, int))
 {
 	t_list *current = lst;
-	t_list *next;
-	int temp;
+	t_list *next = 0;
 
-	current = lst;
 	while (current != 0)
 	{
 		next = current->next;
@@ -14,7 +12,7 @@ t_list *sort_list(t_list *lst, int (*cmp)(int, int))
 		{
 			if ((*cmp)(current->data, next->data) == 0)
 			{
-				temp = current->data;
+				int temp = current->data;
 				current->data = next->data;
 				next->data = temp;
 			}
@@ -22,5 +20,5 @@ t_list *sort_list(t_list *lst, int (*cmp)(int, int))
 		}
 		current = current->next;
 	}
-	return (lst);
+	return lst;
 }
