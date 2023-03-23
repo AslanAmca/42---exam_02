@@ -1,12 +1,16 @@
 #include <stdlib.h>
 
+static char *trim_space(char *str)
+{
+	while (*str == ' ' || *str == '\t' || *str == '\n')
+		str++;
+	return str;
+}
+
 static int get_word_count(char *str)
 {
 	int i = 0;
 	int count = 0;
-
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n')
-		i++;
 
 	while (str[i] != '\0')
 	{
@@ -23,7 +27,7 @@ static char *get_word(char *str)
 	while (str[len] != '\0' && str[len] != ' ' && str[len] != '\t' && str[len] != '\n')
 		len++;
 
-	char *new_str = malloc(sizeof(char) * (len + 1));
+	char *new_str = malloc(sizeof(char) * len);
 
 	int i = 0;
 	while (i < len)
@@ -32,33 +36,40 @@ static char *get_word(char *str)
 		i++;
 	}
 	new_str[i] = '\0';
-	
+
 	return new_str;
 }
 
-static int get_next_word_index(char *str)
+static int get_next_word_count(char *str)
 {
 	int i = 0;
 	while (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
 		i++;
 	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n')
 		i++;
-
 	return i;
 }
 
 char **ft_split(char *str)
 {
+	str = trim_space(str);
 	int word_count = get_word_count(str);
 	char **strings = malloc(sizeof(char *) * word_count + 1);
-	strings[word_count] = NULL;
+
+	if (word_count == 1)
+	{
+		strings[0] = NULL;
+		strings[1] = NULL;
+		return strings;
+	}
 
 	int i = 0;
 	while (i < word_count)
 	{
-		str = str + get_next_word_index(str);
 		strings[i] = get_word(str);
+		str = str + get_next_word_count(str);
 		i++;
 	}
+	strings[i] = NULL;
 	return strings;
 }
