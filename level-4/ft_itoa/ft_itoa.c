@@ -3,19 +3,22 @@
 static int get_len(long number)
 {
 	int len = 0;
-	if (number == 0)
-		return 1;
+
 	if (number < 0)
 	{
 		len++;
 		number = -number;
 	}
-	while (number >= 1)
+	while (1)
 	{
+		if (number <= 9)
+		{
+			len++;
+			return len;
+		}
 		number = number / 10;
 		len++;
 	}
-	return len;
 }
 
 char *ft_itoa(int nbr)
