@@ -9,41 +9,44 @@ static char *trim_space(char *str)
 
 static int get_word_count(char *str)
 {
-	int i = 0;
 	int count = 0;
-
-	while (str[i] != '\0')
+	while (*str != '\0')
 	{
-		if ((str[i] == ' ' || str[i] == '\t' || str[i] == '\n') && (str[i + 1] != ' ' && str[i + 1] != '\t' && str[i + 1] != '\n' && str[i + 1] != '\0'))
-			count++;
-		i++;
+		if (*str == ' ' || *str == '\t' || *str == '\n')
+		{
+			if (*(str + 1) != ' ' && *(str + 1) != '\t' && *(str + 1) != '\n' && *(str + 1) != '\0')
+				count++;
+		}
+		str++;
 	}
 	return count + 1;
 }
 
-static char *get_word(char *str)
+static char *get_next_word(char *str)
 {
 	int len = 0;
-	while (str[len] != '\0' && str[len] != ' ' && str[len] != '\t' && str[len] != '\n')
+	while (str[len] != ' ' && str[len] && '\t' && str[len] != '\n')
 		len++;
 
-	char *new_str = malloc(sizeof(char) * len);
+	if (len == 0)
+		return NULL;
+
+	char *word = malloc(sizeof(char) * (len + 1));
 
 	int i = 0;
 	while (i < len)
 	{
-		new_str[i] = str[i];
+		word[i] = str[i];
 		i++;
 	}
-	new_str[i] = '\0';
-
-	return new_str;
+	word[i] = '\0';
+	return word;
 }
 
-static int get_next_word_count(char *str)
+static int get_next_word_index(char *str)
 {
 	int i = 0;
-	while (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+	while (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != '\0')
 		i++;
 	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n')
 		i++;
@@ -54,22 +57,17 @@ char **ft_split(char *str)
 {
 	str = trim_space(str);
 	int word_count = get_word_count(str);
-	char **strings = malloc(sizeof(char *) * word_count + 1);
 
-	if (word_count == 1)
-	{
-		strings[0] = NULL;
-		strings[1] = NULL;
-		return strings;
-	}
+	char **strings = malloc(sizeof(char *) * (word_count + 1));
 
 	int i = 0;
 	while (i < word_count)
 	{
-		strings[i] = get_word(str);
-		str = str + get_next_word_count(str);
+		strings[i] = get_next_word(str);
+		str = str + get_next_word_index(str);
 		i++;
 	}
 	strings[i] = NULL;
+
 	return strings;
 }
